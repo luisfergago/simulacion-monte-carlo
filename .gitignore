@@ -1,0 +1,14 @@
+# Entorno de Python
+.venv/
+__pycache__/
+*.py[cod]
+
+# Datos de entrada y salidas (regenerables; ver README > Datos y Cómo reproducir).
+# Se conserva la estructura de carpetas con .gitkeep.
+data/*
+!data/.gitkeep
+output/*
+!output/.gitkeep
+
+# Sistema operativo / editor
+.DS_Store
