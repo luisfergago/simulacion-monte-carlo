@@ -52,3 +52,31 @@ SSH_HOST=guatecompras-dev DB=guatecompras_dev ./sql/dump_data.sh
 ```
 Cada query se envía como `COPY (<query>) TO STDOUT WITH CSV HEADER` por SSH, sin dejar
 archivos en el servidor. Los CSV se escriben en `data/`.
+
+## Extensiones (para trabajo futuro, no usadas en la extracción actual)
+
+Tablas para enriquecer o refinar el modelo más adelante. No cambian los CSV actuales.
+
+- **`mapeo_producto` → `catalogo_producto`** — normalización de productos. En salud los
+  `producto.nombre` ya son genéricos limpios (por eso el filtro por nombre crudo reprodujo
+  el dato exacto) y `marca` guarda la marca; para comparar "el mismo producto" en otras
+  categorías o por marca, mapear `producto.id` → `catalogo_producto` (trae clasificación y
+  `palabras_clave`). Mejora de robustez, no arreglo.
+- **`provider`** (registro RGAE/SAT, jsonb) — habilitado/inhabilitado, inconformidades,
+  historial de adjudicación. Para una etapa de riesgo/admisión más rica (ej. inhabilitado
+  ⇒ P(ganar)=0), en vez de solo la antigüedad de `nit_features`.
+- **`historial`** (bitácora por `nog`: `accion`, `fecha`) — modelar TIEMPOS del proceso
+  (publicación → evaluación → adjudicación) como variable simulable nueva.
+- **`modalidad`** (catálogo, 86 filas) — estratificar por procedimiento (Compra Directa vs
+  Licitación vs Cotización), con competencia y montos distintos. `concurso.modalidad` ya
+  está en los CSV; hoy el análisis agrupa.
+- **`producto_analisis_precio`** (~2.0M filas) — fact table alterna. OJO: es más chica que
+  `estado_oferta` (7.4M), parece un subconjunto curado y NO está verificada para reproducir
+  estos CSV; usar solo tras comparar.
+- **`adjudicacion`** (`nit, nog`; monto, contrato, monto_pagado) — fuente alterna del
+  ganador y el monto pagado. Acá el win se marca con `estado_oferta.estado LIKE
+  'Adjudicaci%'` (verificado); si se usa `adjudicacion`, validar que coincida.
+
+**Caveat transversal:** para "adjudicado" siempre pasar por la tabla `estatus`
+(`estatus_kemok='Adjudicado'`), no por el texto literal de `concurso.estatus` — filtrar
+`estatus='Adjudicado'` deja fuera `'Terminado adjudicado'` (~422 mil concursos) y otros.
