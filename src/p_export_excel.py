@@ -133,7 +133,7 @@ with pd.ExcelWriter(XLSX, engine="xlsxwriter") as w:
         ["N competidores", "entrada", "distribución empírica", f"media {r1['N_medio']:.2f}"],
         ["precio de oferta rival", "entrada", "LogNormal",
          f"sigma {SIGMA:.3f}, mediana {q(SCALE)}"],
-        ["mi costo unitario", "entrada (supuesto)", "constante", q(COSTO)],
+        ["mi costo unitario", "entrada (supuesto)", "margen bruto 30%", q(COSTO)],
         ["mi precio", "decisión", "grilla", "se busca el óptimo"],
     ], columns=["Variable", "Rol", "Distribución", "Parámetro"])
     res1 = pd.DataFrame([

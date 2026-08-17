@@ -289,7 +289,7 @@ Caso: Insulina glargina (presentación dominante, ~5,900 concursos). Se ajusta e
 precio de las ofertas rivales como LogNormal y el número de competidores con su
 distribución empírica, se simulan las licitaciones —enfrentando N−1 rivales, condicional a que haya
 competencia (N≥2)— y se busca el precio que maximiza la ganancia esperada.
-Resultado: precio óptimo Q403.03, P(ganar|compites) 0.56, ganancia Q42.73/unidad;
+Resultado: precio óptimo Q391.64, P(ganar|compites) 0.65, ganancia Q55.94/unidad (costo = margen bruto 30% sobre la mediana);
 el 50.5% de los concursos no tiene competencia (ahí el techo es el precio de
 referencia, no el rival); correlación precio–competidores −0.41. El complemento
 `src/p1_costo.py` muestra cómo cambian el óptimo y P(ganar) con el costo, y el

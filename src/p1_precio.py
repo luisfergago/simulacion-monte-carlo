@@ -14,7 +14,8 @@ Variables de entrada:
   - N, número de oferentes por concurso, de su distribución empírica; enfrento N-1
     rivales (soy uno de los N). El óptimo se calcula donde hay competencia (N>=2).
   - precio de cada oferta rival, LogNormal ajustada al histórico del producto.
-  - mi costo unitario, supuesto declarado (fracción del precio típico).
+  - mi costo unitario = mediana − margen bruto supuesto (30%); el margen realizado
+    al ofertar en p* es una salida, no una entrada.
 
 Correlación: el precio ganador baja cuando hay más competidores. Se mide en el
 dato (coeficiente de Spearman) y el modelo la reproduce porque gana el mínimo.
@@ -37,7 +38,7 @@ OUT, DATA = BASE / "output", BASE / "data"
 rng = np.random.default_rng(20260810)
 
 PRODUCTO = "glargina"           # Insulina glargina
-COSTO_FRAC = 0.75               # mi costo = 75% del precio ganador mediano (supuesto)
+MARGEN_BRUTO = 0.30             # margen bruto supuesto (30%) sobre la mediana; ancla el costo
 M = 100_000
 
 # ---------------- 1-2. datos y limpieza ----------------
@@ -63,10 +64,10 @@ print(f"\nN competidores: media={Nporconc.mean():.2f}  "
 precios = d.precio_unitario.values
 s, loc, scale = stats.lognorm.fit(precios, floc=0)
 mediana = float(np.median(precios))
-COSTO = COSTO_FRAC * mediana
+COSTO = (1 - MARGEN_BRUTO) * mediana   # costo = mediana menos el margen bruto
 print(f"Precio de oferta ~ LogNormal(sigma={s:.3f}, mediana=Q{scale:.2f})")
 print(f"Precio ganador mediano observado=Q{d.groupby('nog').precio_unitario.min().median():.2f}")
-print(f"Mi costo (supuesto {COSTO_FRAC:.0%} del precio mediano)=Q{COSTO:.2f}")
+print(f"Mi costo (margen bruto {MARGEN_BRUTO:.0%} sobre la mediana)=Q{COSTO:.2f}")
 
 # ---------------- correlación precio ganador vs N (evidencia) ----------------
 gan = d.groupby("nog").agg(win=("precio_unitario", "min"),
@@ -149,7 +150,7 @@ json.dump({
     "n_ofertas": int(len(d)), "n_concursos": int(d.nog.nunique()),
     "N_medio": float(Nporconc.mean()),
     "lognormal_sigma": float(s), "lognormal_mediana": float(scale),
-    "costo_supuesto_Q": float(COSTO),
+    "costo_supuesto_Q": float(COSTO), "margen_bruto_supuesto": MARGEN_BRUTO,
     "corr_precio_vs_N_spearman": float(rho_s),
     "precio_optimo_Q": p_opt, "P_ganar_opt": float(pganar[jopt]),
     "P_sin_competencia": p_sin_comp,

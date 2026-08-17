@@ -246,7 +246,7 @@ calc = f"""<div class="card" id="calc"><h2>Calculadora interactiva</h2>
 <div class="field"><label>Mi costo (Q)</label><input id="costo" type="number" step="1" value="{COSTO:.0f}" oninput="calc1()"></div>
 <div class="res"><div class="b"><div class="v" id="pwin">-</div><div class="l">prob. de ganar si compites</div></div>
 <div class="b"><div class="v" id="prof">-</div><div class="l">ganancia esperada por unidad</div></div></div>
-<div class="note">El costo es privado, no está en Guatecompras. Según el piso de precios, un costo eficiente para este producto va de Q311 a Q385. La probabilidad es <b>condicional a que haya competencia</b>: el {r1['P_sin_competencia']*100:.0f}% de los concursos no la tiene, y ahí el techo es el precio de referencia, no el rival.</div></div>
+<div class="note">El costo es privado; acá se supone un <b>margen bruto del 30%</b> sobre la mediana (costo ≈ Q{COSTO:.0f}). La probabilidad es <b>condicional a que haya competencia</b>: el {r1['P_sin_competencia']*100:.0f}% de los concursos no la tiene, y ahí el techo es el precio de referencia, no el rival.</div></div>
 <div class="panel"><h4>Caso 2 — ¿Cuánto baja el precio con más competencia?</h4>
 <div class="field"><label>Número de competidores N</label><input id="ncomp" type="number" step="1" min="1" value="3" oninput="calc2()"></div>
 <div class="res"><div class="b"><div class="v" id="pwn">-</div><div class="l">precio ganador esperado</div></div>
