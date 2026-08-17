@@ -141,7 +141,7 @@ if(p<pl){q=Math.sqrt(-2*Math.log(p));return(((((c[0]*q+c[1])*q+c[2])*q+c[3])*q+c
 if(p<=ph){q=p-.5;r=q*q;return(((((a[0]*r+a[1])*r+a[2])*r+a[3])*r+a[4])*r+a[5])*q/(((((b[0]*r+b[1])*r+b[2])*r+b[3])*r+b[4])*r+1);}
 q=Math.sqrt(-2*Math.log(1-p));return-(((((c[0]*q+c[1])*q+c[2])*q+c[3])*q+c[4])*q+c[5])/((((d[0]*q+d[1])*q+d[2])*q+d[3])*q+1);}
 function lninv(p){return Math.exp(MU+SIGMA*ninv(p));}
-function pwinAt(p){var S=1-lncdf(p),w=0;for(var k=0;k<PMF.length;k++)w+=PMF[k][1]*Math.pow(S,PMF[k][0]);return w;}
+function pwinAt(p){var S=1-lncdf(p),w=0,tot=0;for(var k=0;k<PMF.length;k++){if(PMF[k][0]>=2){w+=PMF[k][1]*Math.pow(S,PMF[k][0]-1);tot+=PMF[k][1];}}return tot>0?w/tot:1;}
 function Q(v){return 'Q'+v.toLocaleString('es-GT',{maximumFractionDigits:2});}
 function calc1(){var p=+document.getElementById('precio').value,c=+document.getElementById('costo').value;
 var w=pwinAt(p);document.getElementById('pwin').textContent=(w*100).toFixed(1)+'%';
@@ -208,7 +208,7 @@ p1 = f"""<div class="card" id="p1"><span class="tag t-prov">Óptica del proveedo
 <p class="lead">Para la Insulina glargina se ajusta el precio de las ofertas rivales como LogNormal y el número de competidores con su distribución empírica, se simulan las licitaciones y se busca el precio que maximiza la ganancia esperada.</p>
 <div class="kpis">
 <div class="kpi"><div class="v">Q{r1['precio_optimo_Q']:.2f}</div><div class="l">precio óptimo</div></div>
-<div class="kpi"><div class="v">{r1['P_ganar_opt']*100:.0f}%</div><div class="l">probabilidad de ganar</div></div>
+<div class="kpi"><div class="v">{r1['P_ganar_opt']*100:.0f}%</div><div class="l">prob. de ganar si compites</div></div>
 <div class="kpi"><div class="v">Q{r1['ganancia_esperada_Q']:.2f}</div><div class="l">ganancia esperada por unidad</div></div>
 <div class="kpi"><div class="v">{r1['corr_precio_vs_N_spearman']:.2f}</div><div class="l">correlación precio vs competidores</div></div></div>
 <div class="charts">
@@ -244,9 +244,9 @@ calc = f"""<div class="card" id="calc"><h2>Calculadora interactiva</h2>
 <div class="panel"><h4>Caso 1 — ¿Cuál es mi probabilidad de ganar?</h4>
 <div class="field"><label>Mi precio (Q)</label><input id="precio" type="number" step="1" value="{POPT:.0f}" oninput="calc1()"></div>
 <div class="field"><label>Mi costo (Q)</label><input id="costo" type="number" step="1" value="{COSTO:.0f}" oninput="calc1()"></div>
-<div class="res"><div class="b"><div class="v" id="pwin">-</div><div class="l">probabilidad de ganar</div></div>
+<div class="res"><div class="b"><div class="v" id="pwin">-</div><div class="l">prob. de ganar si compites</div></div>
 <div class="b"><div class="v" id="prof">-</div><div class="l">ganancia esperada por unidad</div></div></div>
-<div class="note">El costo es privado, no está en Guatecompras. Según el piso de precios, un costo eficiente para este producto va de Q311 a Q385.</div></div>
+<div class="note">El costo es privado, no está en Guatecompras. Según el piso de precios, un costo eficiente para este producto va de Q311 a Q385. La probabilidad es <b>condicional a que haya competencia</b>: el {r1['P_sin_competencia']*100:.0f}% de los concursos no la tiene, y ahí el techo es el precio de referencia, no el rival.</div></div>
 <div class="panel"><h4>Caso 2 — ¿Cuánto baja el precio con más competencia?</h4>
 <div class="field"><label>Número de competidores N</label><input id="ncomp" type="number" step="1" min="1" value="3" oninput="calc2()"></div>
 <div class="res"><div class="b"><div class="v" id="pwn">-</div><div class="l">precio ganador esperado</div></div>

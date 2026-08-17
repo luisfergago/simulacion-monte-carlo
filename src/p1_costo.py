@@ -1,5 +1,5 @@
 """
-Propuesta 1 - ¿por qué P(ganar) en el óptimo es 0.55, y de qué depende?
+Propuesta 1 - ¿por qué P(ganar) en el óptimo es ~0.56 (dado que hay competencia), y de qué depende?
 
 Muestra dos cosas:
   A. cómo cambian el precio óptimo, P(ganar) y la ganancia esperada según el costo.
@@ -27,11 +27,13 @@ mediana = float(np.median(precios))
 Nporconc = d.groupby("nog")["nit"].nunique()
 Nv, Nc = np.unique(Nporconc.values, return_counts=True)
 Np = Nc / Nc.sum()
-Nsim = rng.choice(Nv, size=M, p=Np)
+comp = Nv >= 2                              # el óptimo solo aplica donde hay competencia
+Nvc, Npc = Nv[comp], Np[comp] / Np[comp].sum()
+Nsim = rng.choice(Nvc, size=M, p=Npc)
 min_rival = np.empty(M)
 for n in np.unique(Nsim):
     idx = np.where(Nsim == n)[0]
-    off = stats.lognorm.rvs(s, scale=scale, size=(len(idx), int(n)), random_state=rng)
+    off = stats.lognorm.rvs(s, scale=scale, size=(len(idx), int(n) - 1), random_state=rng)  # N-1 rivales
     min_rival[idx] = off.min(axis=1)
 
 grid = np.round(np.linspace(np.percentile(precios, 1), np.percentile(precios, 90), 120), 2)

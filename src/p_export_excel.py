@@ -98,15 +98,15 @@ with pd.ExcelWriter(XLSX, engine="xlsxwriter") as w:
     ws.write(9, 0, "Mi costo (Q)  <--editable", lbl); ws.write(9, 1, COSTO, inp)
     # tabla pmf de N + supervivencia^N (col D,E,F = idx 3,4,5)
     ws.write(4, 3, "N", hdr := wb.add_format({"bold": True, "bg_color": "#D9E1F2", "border": 1}))
-    ws.write(4, 4, "P(N)", hdr); ws.write(4, 5, "S(precio)^N", hdr)
+    ws.write(4, 4, "P(N)", hdr); ws.write(4, 5, "S^(N-1) si N>=2", hdr)
     r0 = 5
     for i, (n, p) in enumerate(pmf.items()):
         rr = r0 + i
         ws.write(rr, 3, int(n)); ws.write(rr, 4, float(p), p3)
-        ws.write_formula(rr, 5, f"=(1-LOGNORM.DIST($B$9,$B$6,$B$5,TRUE))^D{rr+1}", p3)
+        ws.write_formula(rr, 5, f"=IF(D{rr+1}>=2,(1-LOGNORM.DIST($B$9,$B$6,$B$5,TRUE))^(D{rr+1}-1),0)", p3)
     rN = r0 + len(pmf) - 1
-    ws.write(11, 0, "P(ganar)", lbl)
-    ws.write_formula(11, 1, f"=SUMPRODUCT(E{r0+1}:E{rN+1},F{r0+1}:F{rN+1})", p3)
+    ws.write(11, 0, "P(ganar | compites)", lbl)
+    ws.write_formula(11, 1, f"=SUMPRODUCT(E{r0+1}:E{rN+1},F{r0+1}:F{rN+1})/SUMIF(D{r0+1}:D{rN+1},\">=2\",E{r0+1}:E{rN+1})", p3)
     ws.write(12, 0, "Ganancia esperada por unidad (Q)", lbl)
     ws.write_formula(12, 1, "=B12*(B9-B10)", money)
 
@@ -138,7 +138,8 @@ with pd.ExcelWriter(XLSX, engine="xlsxwriter") as w:
     ], columns=["Variable", "Rol", "Distribución", "Parámetro"])
     res1 = pd.DataFrame([
         ["Precio óptimo", q(r1["precio_optimo_Q"])],
-        ["P(ganar) en el óptimo", f"{r1['P_ganar_opt']:.3f}"],
+        ["P(ganar) en el óptimo (compitiendo)", f"{r1['P_ganar_opt']:.3f}"],
+        ["Sin competencia (N=1)", f"{r1['P_sin_competencia']*100:.1f}%"],
         ["Ganancia esperada por unidad", q(r1["ganancia_esperada_Q"])],
         ["Error estándar Monte Carlo", q(r1["EE_MC"])],
         ["Correlación precio vs N (Spearman)", f"{r1['corr_precio_vs_N_spearman']:.3f}"],

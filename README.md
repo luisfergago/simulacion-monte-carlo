@@ -94,8 +94,9 @@ El orden importa: `engine.py` y los scripts `03`/`04`/`06`/`08`/`09` leen
 
 ## Resultados principales
 
-**Propuesta 1 — Insulina glargina (proveedor).** Precio óptimo Q391.64,
-P(ganar) 0.55, ganancia esperada Q35.42/unidad. Correlación precio–competidores
+**Propuesta 1 — Insulina glargina (proveedor).** Precio óptimo Q403.03,
+P(ganar | hay competencia) 0.56, ganancia esperada Q42.73/unidad; 50% de
+concursos sin competencia (rivales = N−1, óptimo condicional a N≥2). Correlación precio–competidores
 −0.41.
 
 **Propuesta 2 — Cardiometabólicos (Estado).** 40% de renglones sin competencia;

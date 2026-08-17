@@ -287,9 +287,11 @@ presentación HTML interactiva (`p_export_html.py`) y Excel con calculadoras
 ### Propuesta 1 — Precio para ganar (proveedor), `src/p1_precio.py`
 Caso: Insulina glargina (presentación dominante, ~5,900 concursos). Se ajusta el
 precio de las ofertas rivales como LogNormal y el número de competidores con su
-distribución empírica, se simulan las licitaciones y se busca el precio que
-maximiza la ganancia esperada. Resultado: precio óptimo Q391.64, P(ganar) 0.55,
-ganancia Q35.42/unidad; correlación precio–competidores −0.41. El complemento
+distribución empírica, se simulan las licitaciones —enfrentando N−1 rivales, condicional a que haya
+competencia (N≥2)— y se busca el precio que maximiza la ganancia esperada.
+Resultado: precio óptimo Q403.03, P(ganar|compites) 0.56, ganancia Q42.73/unidad;
+el 50.5% de los concursos no tiene competencia (ahí el techo es el precio de
+referencia, no el rival); correlación precio–competidores −0.41. El complemento
 `src/p1_costo.py` muestra cómo cambian el óptimo y P(ganar) con el costo, y el
 trade-off contra una meta de P(ganar).
 
