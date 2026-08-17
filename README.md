@@ -51,7 +51,9 @@ RESUMEN_Y_PROCEDIMIENTO.md    procedimiento detallado
 
 Los CSV de `data/` **no se versionan** (pesan ~83 MB y son extractos
 regenerables). Se obtienen del PostgreSQL de Guatecompras vía SSH con
-`COPY ... TO STDOUT`. Archivos esperados en `data/`:
+`COPY ... TO STDOUT`. Los **queries exactos** (verificados contra la base) y el
+script `dump_data.sh` para regenerarlos están en [`sql/`](sql/README.md). Archivos
+esperados en `data/`:
 
 | Archivo | Usado por | Contenido |
 |---|---|---|

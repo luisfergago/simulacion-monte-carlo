@@ -55,8 +55,10 @@ homogéneo, entonces sirve para ajustar distribuciones sin mezclar realidades mu
 distintas.
 
 ### Paso 2. Extracción de datos reales
-Se conecta a PostgreSQL por SSH y se exportan tres archivos con `COPY ... TO STDOUT`,
-sin dejar archivos en el servidor.
+Se conecta a PostgreSQL por SSH y se exportan los archivos con `COPY ... TO STDOUT`,
+sin dejar archivos en el servidor. Los queries exactos de los seis CSV —con las
+tablas, los filtros verificados contra la base y un script `dump_data.sh`— están en
+`sql/` (ver `sql/README.md`).
 
 1. `data/renglones_salud.csv` (557,710 filas). Una fila por renglón, con el número
    de ofertas, las unidades demandadas y el precio mínimo, promedio, desviación y
